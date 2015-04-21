@@ -64,7 +64,7 @@ disp(mensaje)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5 Modulando en SSB. %%%%%%%%%%%%5%%%%%%%%%%%%%%%%%%%%%5
 
-% 2.d)Desfasando 90 grados con la trnasformada de Hilbert.
+% 2.d)Desfasando 90 grados con la transformada de Hilbert.
 
 %Transformada de Hilbert
 XHilbert = (hilbert(Xt) - Xt)/i;
@@ -77,39 +77,51 @@ figure(4); plot(f,AbsXHilbert); axis([-100 100 0 1]); title('2d2) Señal mensaje 
 
 %2.e) 
 
-%Componente en Fase
+%Componente en Fase (Punto rosado)
 XssbFase = (5/2).*Xt.*cos(500*2*pi.*t);
-figure(5); plot(t,XssbFase)
+figure(5); plot(t,XssbFase);  axis([-0.01 0.01 -5 5]) ; title('2e1) Señal multiplicado por el oscilador local sin desfase'); xlabel('t'); ylabel('Ac/2 x(t)cos(wt)');grid();
+
+XssbFaseF =abs( fftshift( fft(XssbFase) ) )/length(XssbFase);
+figure(6); plot(f,XssbFaseF) ; axis([-1000 1000 0 1]) ; title('2e2) Señal multiplicado por el oscilador en frecuencia'); xlabel('f'); ylabel(' (Ac/2pi)x(w)*cos(wt)');grid();
 
 
+% 2.f)
 
 
 %Componente en Cuadratura
-XssbQuad = (5/2).*XHilbert.*sin(500*2*pi*t);
+XssbQuad = (5/2).*XHilbert.*sin(500*2*pi*t); 
+figure(7) ; plot(t,XssbQuad); axis([-0.05 0.05 -5 5]) ;title('2f1) Señal desfasada   multiplicado por el oscilador local desfasado  '); xlabel('t'); ylabel('Ac/2 Xhilbert(t)sen(wt)');grid();
+
+XssbQuadF = abs(fftshift( fft(XssbQuad) ) )/length(XssbQuad);
+figure(8) ; plot(f,XssbQuadF); axis([-800 800 0 1]) ;title('2f2) Señal desfasada multiplicado por el oscilador local desfasado '); xlabel('f'); ylabel('(Ac/2pi) Xhilbert(w)*sen(wt)');grid();
+
+%2.g)
 
 %La senal modulada en en SSB es:
 Xssb = XssbFase - XssbQuad;
-
-figure(6); plot(t,Xssb);
-
-
+figure(8); plot(t,Xssb);  axis([-0.025 0.025 -5 5]) ;title('2e1) Señal modulada xssb(t) '); xlabel('t'); ylabel('xssb(t)');grid();
 
 %Espectro de la senal modulada Lssb:
 NssbU = length(Xssb);
 AbsXssbfU = abs(fftshift(fft(Xssb)))/NssbU;
 f2 = linspace(-Fs/2,Fs/2,length(AbsXssbfU));
-figure(7); plot(f2,AbsXssbfU); axis([-700 700 0 2.5]);
+figure(9); plot(f2,AbsXssbfU); axis([-700 700 0 2.5]); title('2e2) Señal modulada xssb(w) en frecuencia '); xlabel('f'); ylabel('xssb(w)');grid();
 
 
+%2.h) Calculo del ancho de banda despues de modular
 
+%%%  Ver como inventamos el calculo
 
+% 2.i) Calculo de la potencia despues de modular 
+
+%% Se realiza un integral discreta que proporciona la energia debajo de la curva y se divide entre el numero de puntos 
+potencia_ssb = sum(abs(Xssb).^2)/length(t)
 
 %Demodulador
-
 Xdem = Xssb.*cos(500*2*pi*t);
 Xdem = filter(Filtro,Xdem);
 
-figure(8); plot(t,Xdem);
+figure(9); plot(t,Xdem);
 
 
 
