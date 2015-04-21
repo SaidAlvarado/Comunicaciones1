@@ -1,7 +1,7 @@
 % Laboratorio 1:  Modulacion SSB
 
 
-%%%%%%%%%%%%%%%% Definimos X(t) %%%%%%%%%%%%%%%%%%%%%%%%%%%5 
+%%%%%%%%%%%%%%%% Definimos X(t) %%%%%%%%%%%%%%%%%%%%%%%%%%%5
 %Generamos la base de tiempo
 frecuencia_mensaje = 16;
 Fs = 1000*frecuencia_mensaje;
@@ -38,21 +38,21 @@ BW = 0;
 %Recorremos la funcion de la magnitud del espectro de la señal mensajem
 %desde la mitad hacia arriba
 for a = ((round(length(AbsXf)/2))+1):length(AbsXf)
-    
+
     %Si el punto en el que estamos es menor que los puntos alrededor de el.
     %Es un minimo
     if (AbsXf(a-1) > AbsXf(a)) && (AbsXf(a+1) > AbsXf(a))
         %Registramos que pasamos por un valle
         valles = valles + 1;
     end
-    
+
     %Cuando pasemos por 3 valles, registramos en que punto de la base de
     %frecuencia se encuentra el tercer valle.
     if valles == 3
         BW = f(a);
         break
     end
-    
+
 end
 %Imprimimos el resultado.
 mensaje = ['El ancho de banda es = ', num2str(BW),'Hz'] ;
@@ -129,21 +129,21 @@ BW2 = 0;
 %Recorremos la funcion de la magnitud del espectro de la señal modulada
 %desde la mitad hacia arriba
 for a = ((round(length(AbsXssb)/2))+1):length(AbsXssb)
-    
+
     %Si el punto en el que estamos es mayor que los puntos alrededor de el.
     %Es un maximo
     if (AbsXssb(a-1) < AbsXssb(a)) && (AbsXssb(a+1) < AbsXssb(a))
         %Registramos que pasamos por un pico
         picos = picos + 1;
     end
-    
+
     %Cuando pasemos por 3 picos, registramos en que punto de la base de
     %frecuencia se encuentra el tercer pico.
     if picos == 3
         BW2 = f(a);
         break
     end
-    
+
 end
 %Le sumamos al tercer pico la frecuencia base de la señal mensaje. Imprimimos el resultado.
 mensaje = ['El ancho de banda luego de modular es = ', num2str(BW2 + frecuencia_mensaje ),'Hz'] ;
@@ -165,6 +165,3 @@ Xdem = Xssb.*cos(500*2*pi*t);
 Xdem = filter(Filtro,Xdem);
 
 figure(12); plot(t,Xdem);
-
-
-
