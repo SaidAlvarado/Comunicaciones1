@@ -114,6 +114,7 @@ Xssb = XssbFase - XssbQuad;
 AbsXssb = abs(fftshift(fft(Xssb)))/length(Xssb);
 %Graficamos
 figure(9); plot(t,real(Xssb)); axis([-0.03 0.03 -5 5]); title('2g1) Señal mensaje en tiempo, Modulada'); xlabel('t'); ylabel('Xssb(t)');grid();
+
 figure(10); plot(f,AbsXssb); axis([-700 700 0 2.2]); title('2g2) Señal mensaje en frecuencia, Modulada'); xlabel('f'); ylabel('Xssb(f)');grid();
 
 
@@ -157,11 +158,48 @@ mensaje = ['La potencia de la señal modulada es = ', num2str(potencia_tiempo),'W
 disp(mensaje)
 
 
-
+%2.j)
 
 %Demodulador
 
-Xdem = Xssb.*cos(500*2*pi*t);
-Xdem = filter(Filtro,Xdem);
+Xdem = Xssb.*cos(500*2*pi*t); 
+figure(11); plot(t,Xdem); axis([-0.06 0.06 -5 5]); title('2j1) Señal pasando por el demodulador (oscilador local)'); xlabel('t'); ylabel('Xssb(t)*cos(wct)');grid();
 
-figure(12); plot(t,Xdem);
+XdemF=abs(fftshift(fft(Xdem)))/length(Xdem);
+figure(12); plot(f,XdemF); axis([-1500 1500 0 2.2]); title('2j2) Señal pasando por el demodulador (oscilador local) en frecuencia '); xlabel('f'); ylabel('Xssb(t)cos(wct) en frecuencia');grid();
+
+%2.k)
+%% Creamos el filtro pasabajo 
+
+Wn=2*96/Fs;  %% Para normalizar la frecuencia 
+
+[B,A]=butter(2,Wn); %% creacion del filtro pasabajo
+
+%% aplicamos el filtro a la salida a la señal 
+XdemFinal = filter(B,A,Xdem); %%  tenemos la señal filtrada
+figure(13); plot(t,XdemFinal);axis([-0.1 0.1 -5 5]); title('2k1) Señal despues del filtro'); xlabel('t'); ylabel('XdemFinal(t)');grid();
+
+XdemFinalf=abs(fftshift(fft(XdemFinal)))/length(XdemFinal);
+figure(14); plot(f,XdemFinalf); axis([-200 200 0 1.1]); title('2k2) Señal despues del filtro en frecuencia '); xlabel('f'); ylabel('xdemfinal(w)');grid();
+
+% 2.L)
+%% Reescalamos la señal para obtener lo mas posible la señal original , esto ocurre por que la ganancia del filtro no era perfectamente 1
+XdemFinalF=0.86*XdemFinal;
+figure(15); plot(t,XdemFinalF);axis([-0.1 0.1 -5 5]); title('2L1) Señal demodulada'); xlabel('t'); ylabel('Xdemodulada(t)');grid();
+
+XdemFinalFf=abs(fftshift(fft(XdemFinalF)))/length(XdemFinalF);
+figure(16); plot(f,XdemFinalFf); axis([-200 200 0 1.1]); title('2L2) Señal demodulada '); xlabel('f'); ylabel('xdemodulada(w)');grid();
+
+% 2.m )
+
+%% Creo un proceso aleatorio con la funcion rand (normalizados)
+ruido=randn(1,8001);
+%% Esta variable aleatoria es independiente de la senal modulada asi que basta con sumarlas 
+xssbCont= Xssb + ruido;  %% contamino la senal con ruido 
+
+% 2.n)
+figure(17); plot(t,xssbCont);axis([-0.01 0.01 -5 5]); title('2m1) Señal contaminada'); xlabel('t'); ylabel('XssbRuido(t)');grid();
+
+xssbContF=abs(fftshift(fft(xssbCont)))/length(xssbCont);
+figure(18); plot(f,xssbContF); axis([-800 800 0 1.1]); title('2m2) Señal contaminada '); xlabel('f'); ylabel('xcontaminada(w)');grid();
+
