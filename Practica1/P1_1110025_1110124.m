@@ -65,7 +65,7 @@ disp(mensaje)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Modulando en SSB. %%%%%%%%%%%%5%%%%%%%%%%%%%%%%%%%%%5
 
-% 2.d)Desfasando 90 grados con la trnasformada de Hilbert.
+% 2.d)Desfasando 90 grados con la transformada de Hilbert.
 
 %Transformada de Hilbert
 XHilbert = (hilbert(Xt) - Xt)/i;
@@ -100,8 +100,6 @@ AbsXssbQuad = abs(fftshift(fft(XssbQuad)))/length(XssbQuad);
 %Graficamos
 figure(7); plot(t,real(XssbQuad)); axis([-0.03 0.03 -3.5 3.5]); title('2f1) Señal mensaje en tiempo,desfasada y multiplicada por el oscilador'); xlabel('t'); ylabel('XssbQuad(t)');grid();
 figure(8); plot(f,AbsXssbQuad); axis([-700 700 0 1.1]); title('2f2) Señal mensaje en frecuencia, desfasada y multiplicada por el oscilador'); xlabel('f'); ylabel('XssbQuad(f)');grid();
-
-
 
 
 
@@ -150,6 +148,7 @@ mensaje = ['El ancho de banda luego de modular es = ', num2str(BW2 + frecuencia_
 disp(mensaje)
 
 
+
 %2.i) Calculando la Potencia de la señal modulada
 %Calculamos la potencia en tiempo (usando una integral discreta, como promedio de la energia,area bajo la curva):
 potencia_tiempo = sum(abs(Xssb).^2)/length(Xssb);
@@ -159,9 +158,4 @@ disp(mensaje)
 
 
 
-%Demodulador
 
-Xdem = Xssb.*cos(500*2*pi*t);
-Xdem = filter(Filtro,Xdem);
-
-figure(12); plot(t,Xdem);
